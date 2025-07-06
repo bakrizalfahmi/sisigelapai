@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cermin Gelap Kecerdasan Buatan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5DC; /* Cream */
+        }
+        .cocoa-bg { background-color: #5C4033; }
+        .cocoa-text { color: #5C4033; }
+        .cream-bg { background-color: #F5F5DC; }
+        .cream-text { color: #F5F5DC; }
+        .lighter-cocoa-bg { background-color: #D2B48C; } /* New class for lighter color */
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s, color 0.3s;
+            cursor: pointer;
+        }
+        .nav-link.active {
+            background-color: #5C4033;
+            color: white;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #D2B48C; /* Lighter Cocoa */
+        }
+        .lang-switcher button {
+            padding: 0.5rem;
+            border: 2px solid transparent;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .lang-switcher button.active {
+            border-color: #5C4033;
+            background-color: white;
+            color: #5C4033;
+        }
+        .point-list li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .point-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: #5C4033;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .citation-list li {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        @media (min-width: 768px) {
+            .citation-list li {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        .citation-list li:last-child {
+            border-bottom: none;
+        }
+        .visit-button {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            margin-top: 0.5rem;
+            background-color: #5C4033;
+            color: white;
+            border-radius: 0.5rem;
+            text-align: center;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .visit-button:hover {
+            background-color: #7a5e4f;
+        }
+        @media (min-width: 768px) {
+            .visit-button {
+                margin-top: 0;
+                margin-left: 1rem;
+            }
+        }
+        .embed-container {
+            max-width: 840px; /* Lebar maksimum untuk kebolehbacaan */
+            margin: 0 auto; /* Pusatkan bekas */
+            position: relative;
+            width: 100%;
+            padding-top: 141.4%; /* Nisbah Aspek A4 (297 / 210 * 100) */
+            height: 0;
+            overflow: hidden;
+        }
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Main Container -->
+    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Header -->
+        <header class="py-6 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold cocoa-text" data-lang-key="appTitle">Cermin Gelap Kecerdasan Buatan</h1>
+            <div class="flex items-center space-x-4">
+                <!-- Language Switcher -->
+                <div class="lang-switcher flex items-center bg-cream-200 p-1 rounded-md">
+                    <button id="lang-my" class="active">MY</button>
+                    <button id="lang-en">EN</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md cocoa-text focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav id="main-nav" class="hidden md:flex md:justify-center md:items-center bg-white p-2 rounded-lg shadow-md mb-8">
+            <div id="nav-links" class="flex flex-col md:flex-row md:space-x-2 w-full md:w-auto text-center">
+                <a class="nav-link active" data-tab="pengenalan" data-lang-key="navIntro">Pengenalan</a>
+                <a class="nav-link" data-tab="bahagian1" data-lang-key="navPart1">Bahagian I</a>
+                <a class="nav-link" data-tab="bahagian2" data-lang-key="navPart2">Bahagian II</a>
+                <a class="nav-link" data-tab="bahagian3" data-lang-key="navPart3">Bahagian III</a>
+                <a class="nav-link" data-tab="artikel" data-lang-key="navArtikel">Artikel</a>
+                <a class="nav-link" data-tab="rujukan" data-lang-key="navWorksCited">Rujukan</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <!-- Content sections will be injected here by JavaScript -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center py-6 mt-8 text-sm cocoa-text">
+            <p>&copy; 2025 Hak Cipta Terpelihara Tc. Bakrizal Fahmi bin Abu Bakar.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- DATA STORE ---
+        const content = {
+            // App Titles & Nav
+            appTitle: {
+                my: "Cermin Gelap Kecerdasan Buatan",
+                en: "The Dark Mirror of Artificial Intelligence"
+            },
+            navIntro: { my: "Pengenalan", en: "Introduction" },
+            navPart1: { my: "Bahagian I", en: "Part I" },
+            navPart2: { my: "Bahagian II", en: "Part II" },
+            navPart3: { my: "Bahagian III", en: "Part III" },
+            navArtikel: { my: "Artikel", en: "Article" },
+            navWorksCited: { my: "Rujukan", en: "Works Cited" },
+
+            // --- PENGENALAN ---
+            pengenalan: {
+                title: { my: "Pengenalan: Cermin Dunia yang Retak", en: "Introduction: A Fractured World Mirror" },
+                content: {
+                    my: `<p class="mb-4">Falsafah asas yang menyatakan "cara kita melihat dunia menentukan bagaimana kita melangkah di dalamnya" kini berhadapan dengan cabaran yang paling mendalam dalam sejarah manusia. Kemunculan Kecerdasan Buatan (AI) bukan sekadar satu lagi lonjakan teknologi; ia adalah penciptaan sebuah kanta pembentuk realiti yang berkuasa—sebuah cermin yang bukan sahaja memantulkan masyarakat kita, tetapi juga secara aktif memesongkan dan membentuk semula pandangan kita terhadap diri, antara satu sama lain, dan dunia secara keseluruhan.</p>
+                         <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold cocoa-bg cream-text"><span>AI sebagai Cermin Masyarakat</span></div>
+                         <p class="mb-4">Penyepaduan AI yang pesat ke dalam setiap fabrik kehidupan moden, daripada interaksi peribadi hinggalah kepada geopolitik global, bukan lagi domain fiksyen sains tetapi realiti semasa yang mendesak. Ia memaksa kita untuk menyoal semula asas-asas pemikiran, komunikasi, dan interaksi kita.</p>
+                         <div class="bg-cream-100 p-4 rounded-lg border-l-4 border-cocoa-500 mb-4">
+                            <h3 class="font-bold text-lg cocoa-text mb-2">Sisi Gelap AI</h3>
+                            <p>Di sebalik janji-janji kemajuan dan kecekapan, wujud "sisi gelap" yang semakin ketara. Ancaman ini bukan sekadar pepijat teknikal atau kerentanan sistem, tetapi cabaran etika, sosial, dan falsafah yang mendalam yang berakar umbi dalam data yang kita suapkan kepadanya dan nilai-nilai yang kita benamkan di dalamnya.</p>
+                            <ul class="list-disc list-inside mt-2 pl-2">
+                                <li><strong>Kecondongan Algoritma:</strong> Mengekalkan ketidakadilan.</li>
+                                <li><strong>Pengawasan Massa:</strong> Menghakis kebebasan.</li>
+                                <li><strong>Disinformasi:</strong> Meruntuhkan realiti bersama.</li>
+                                <li><strong>Gangguan Ekonomi:</strong> Mengancam kestabilan sosial.</li>
+                            </ul>
+                         </div>
+                         <p>Laporan ini akan menjalankan kajian terperinci mengenai sisi gelap AI ini, dengan tujuan untuk memahami bagaimana ia mengubah cara kita melihat dunia dan, seterusnya, bagaimana perubahan persepsi ini memberi kesan kepada keamanan sejagat. Bahagian I akan membedah risiko-risiko asas AI, Bahagian II akan menganalisis impak masyarakat yang lebih luas, dan Bahagian III akan mencadangkan anjakan paradigma yang diperlukan untuk kewujudan bersama yang aman dengan ciptaan kita ini.</p>`,
+                    en: `<p class="mb-4">The fundamental philosophy that "the way we see the world determines how we navigate it" now faces its most profound challenge in human history. The emergence of Artificial Intelligence (AI) is not just another technological leap; it is the creation of a powerful reality-shaping lens—a mirror that not only reflects our society but also actively distorts and reshapes our views of ourselves, each other, and the world at large.</p>
+                         <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold cocoa-bg cream-text"><span>AI as a Societal Mirror</span></div>
+                         <p class="mb-4">The rapid integration of AI into every fabric of modern life, from personal interactions to global geopolitics, is no longer the domain of science fiction but a pressing current reality. It forces us to question the very foundations of our thinking, communication, and interaction.</p>
+                         <div class="bg-cream-100 p-4 rounded-lg border-l-4 border-cocoa-500 mb-4">
+                            <h3 class="font-bold text-lg cocoa-text mb-2">The Dark Side of AI</h3>
+                            <p>Behind the promises of progress and efficiency lies a growing "dark side." This threat is not merely technical bugs or system vulnerabilities, but deep ethical, social, and philosophical challenges rooted in the data we feed it and the values we embed within it.</p>
+                            <ul class="list-disc list-inside mt-2 pl-2">
+                                <li><strong>Algorithmic Bias:</strong> Perpetuating injustice.</li>
+                                <li><strong>Mass Surveillance:</strong> Eroding freedom.</li>
+                                <li><strong>Disinformation:</strong> Collapsing shared reality.</li>
+                                <li><strong>Economic Disruption:</strong> Threatening social stability.</li>
+                            </ul>
+                         </div>
+                         <p>This report will conduct a detailed study of this dark side of AI, aiming to understand how it changes the way we see the world and, consequently, how this perceptual shift impacts global peace. Part I will dissect the fundamental risks of AI, Part II will analyze the broader societal impacts, and Part III will propose the necessary paradigm shift for a conscious and peaceful coexistence with our most powerful creation.</p>`
+                }
+            },
+
+            // --- BAHAGIAN 1 ---
+            bahagian1: {
+                title: { my: "Bahagian I: Bayangan Algoritma – Risiko Asas Era AI", en: "Part I: The Algorithmic Shadow – Fundamental Risks of the AI Era" },
+                chapters: [
+                    {
+                        title: { my: "Bab 1: Asal Usul Kecondongan – Bagaimana AI Mempelajari dan Mengekalkan Ketidakadilan", en: "Chapter 1: The Origins of Bias – How AI Learns and Perpetuates Injustice" },
+                        content: {
+                            my: `<p class="mb-4">Kecondongan algoritma adalah cerminan langsung daripada data yang digunakan untuk melatihnya, keputusan reka bentuk manusia, dan cara outputnya ditafsirkan. Ia sering kali mencerminkan dan menguatkan lagi prasangka sosioekonomi, kaum, dan jantina yang sedia ada.</p>
+                                 <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold lighter-cocoa-bg cocoa-text"><span>Kitaran Maklum Balas Bias AI</span></div>
+                                 <h4 class="font-bold text-md cocoa-text mt-4 mb-2">Punca Utama Kecondongan:</h4>
+                                 <ul class="point-list mb-4">
+                                    <li><strong>Kecondongan Data (Data Bias):</strong> Punca paling lazim, di mana data latihan tidak mewakili populasi sebenar atau mengandungi prasangka sejarah. Contohnya, sistem pengecaman wajah yang lebih lemah prestasi untuk individu berkulit gelap.</li>
+                                    <li><strong>Kecondongan Reka Bentuk (Design Bias):</strong> Bias tersirat pereka bentuk yang dipindahkan secara tidak sedar ke dalam algoritma.</li>
+                                    <li><strong>Kecondongan Proksi (Proxy Bias):</strong> Menggunakan data proksi (cth., poskod) yang secara tidak sengaja berkorelasi dengan atribut sensitif (cth., kaum).</li>
+                                 </ul>
+                                 <p class="mb-4"><strong>Implikasi dunia nyata sangat membimbangkan:</strong> kadar faedah pinjaman yang lebih tinggi untuk minoriti, diagnosis perubatan yang kurang tepat untuk wanita, dan diskriminasi dalam pengambilan pekerja. Ini mewujudkan <strong>kitaran maklum balas yang berbahaya</strong>, di mana AI tidak hanya mencerminkan ketidakadilan, tetapi mengautomasikan, menskalakan, dan mempercepatkannya di sebalik topeng "objektiviti" teknologi.</p>`,
+                            en: `<p class="mb-4">Algorithmic bias is a direct reflection of the data used to train it, human design decisions, and how its output is interpreted. It often reflects and amplifies existing socioeconomic, racial, and gender prejudices.</p>
+                                 <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold lighter-cocoa-bg cocoa-text"><span>The AI Bias Feedback Loop</span></div>
+                                 <h4 class="font-bold text-md cocoa-text mt-4 mb-2">Main Sources of Bias:</h4>
+                                 <ul class="point-list mb-4">
+                                    <li><strong>Data Bias:</strong> The most common cause, where training data does not represent the real population or contains historical prejudices. For example, facial recognition systems performing worse for dark-skinned individuals.</li>
+                                    <li><strong>Design Bias:</strong> Implicit biases of designers unconsciously transferred into the algorithm.</li>
+                                    <li><strong>Proxy Bias:</strong> Using proxy data (e.g., postal codes) that unintentionally correlates with sensitive attributes (e.g., race).</li>
+                                 </ul>
+                                 <p class="mb-4"><strong>The real-world implications are alarming:</strong> higher loan interest rates for minorities, less accurate medical diagnoses for women, and discrimination in hiring. This creates a <strong>dangerous feedback loop</strong>, where AI not only reflects injustice but automates, scales, and accelerates it behind a mask of technological "objectivity."</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 2: Pandangan Panopticon – Pengawasan, Kawalan Sosial, dan Hakisan Kebebasan", en: "Chapter 2: The Panopticon View – Surveillance, Social Control, and the Erosion of Freedom" },
+                        content: {
+                            my: `<p class="mb-4">AI telah mengubah pengawasan menjadi satu sistem panopticon digital yang sentiasa ada, automatik, dan berskala besar, memberikan kuasa yang belum pernah berlaku sebelum ini kepada kerajaan dan syarikat.</p>
+                                 <div class="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+                                    <h4 class="font-bold text-md cocoa-text mb-2">Kesan Utama Pengawasan AI:</h4>
+                                    <ul class="point-list">
+                                        <li><strong>Kesan Penyejukan (Chilling Effect):</strong> Individu menjadi takut untuk menyuarakan pendapat kritikal, menyekat kebebasan bersuara.</li>
+                                        <li><strong>Penyalahgunaan Kuasa:</strong> Alat yang berkuasa untuk pengukuhan autoritarianisme.</li>
+                                        <li><strong>Penargetan Tidak Adil:</strong> Kadar ralat yang lebih tinggi pada kumpulan minoriti membawa kepada penangkapan yang salah.</li>
+                                        <li><strong>Kepolisan Prediktif (Predictive Policing):</strong> Mewujudkan kitaran maklum balas berbahaya di mana amalan kepolisan yang berat sebelah diberi justifikasi saintifik yang palsu, mengubah prinsip "dianggap tidak bersalah" kepada "dianggap berisiko secara algoritma."</li>
+                                    </ul>
+                                 </div>
+                                 <p>Dari China dengan sistem kredit sosialnya hingga ke rangkaian pengecaman wajah di AS dan Eropah, teknologi ini mengubah hubungan antara warganegara dan negara, terutamanya bagi komuniti yang sudah terpinggir.</p>`,
+                            en: `<p class="mb-4">AI has transformed surveillance into an omnipresent, automated, and large-scale digital panopticon, giving unprecedented power to governments and corporations.</p>
+                                 <div class="bg-white p-4 rounded-lg border border-gray-200 mb-4">
+                                    <h4 class="font-bold text-md cocoa-text mb-2">Key Impacts of AI Surveillance:</h4>
+                                    <ul class="point-list">
+                                        <li><strong>Chilling Effect:</strong> Individuals become afraid to express critical opinions, suppressing freedom of speech.</li>
+                                        <li><strong>Abuse of Power:</strong> A powerful tool for strengthening authoritarianism.</li>
+                                        <li><strong>Unfair Targeting:</strong> Higher error rates on minority groups lead to wrongful arrests.</li>
+                                        <li><strong>Predictive Policing:</strong> Creates a dangerous feedback loop where biased policing practices are given a false scientific justification, shifting the principle from "innocent until proven guilty" to "algorithmically deemed at risk."</li>
+                                    </ul>
+                                 </div>
+                                 <p>From China with its social credit system to facial recognition networks in the US and Europe, this technology is altering the relationship between citizen and state, especially for already marginalized communities.</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 3: Ambang Pasca-Kebenaran – Disinformasi, Deepfake, dan Runtuhnya Realiti Bersama", en: "Chapter 3: The Post-Truth Threshold – Disinformation, Deepfakes, and the Collapse of Shared Reality" },
+                        content: {
+                            my: `<p class="mb-4">AI Generatif telah mendemokrasikan penciptaan kandungan sintetik yang sangat realistik—dikenali sebagai <strong>deepfakes</strong>—yang menjadikan sempadan antara fakta dan fiksyen semakin kabur. Ini adalah serangan sistematik terhadap keupayaan kita untuk bersetuju tentang apa yang nyata.</p>
+                                 <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold cocoa-bg cream-text"><span>Disinformasi dan Polarisasi</span></div>
+                                 <p class="mt-4 mb-4">Ancaman sebenar melangkaui pemalsuan satu peristiwa. Ia terletak pada "<strong>dividen pembohong</strong>" (liar's dividend): keupayaan untuk menghakis kepercayaan terhadap semua kandungan media, di mana pelaku boleh menafikan bukti tulen dengan hanya mendakwa ia adalah deepfake.</p>
+                                 <p>Ini mengubah cara kita melihat dunia secara asas. Kita beralih daripada dunia di mana kita berdebat tentang <strong>tafsiran fakta</strong>, kepada dunia di mana kita berdebat tentang <strong>kewujudan fakta</strong> itu sendiri. Kehancuran realiti bersama ini adalah ancaman langsung kepada keamanan sejagat.</p>`,
+                            en: `<p class="mb-4">Generative AI has democratized the creation of highly realistic synthetic content—known as <strong>deepfakes</strong>—which increasingly blurs the line between fact and fiction. This is a systematic attack on our ability to agree on what is real.</p>
+                                 <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold cocoa-bg cream-text"><span>Disinformation and Polarization</span></div>
+                                 <p class="mt-4 mb-4">The real threat extends beyond faking a single event. It lies in the "<strong>liar's dividend</strong>": the ability to erode trust in all media content, where perpetrators can deny genuine evidence by simply claiming it is a deepfake.</p>
+                                 <p>This fundamentally changes how we see the world. We shift from a world where we debate the <strong>interpretation of facts</strong>, to a world where we debate the <strong>existence of facts</strong> themselves. This collapse of a shared reality is a direct threat to global peace.</p>`
+                        }
+                    }
+                ]
+            },
+
+            // --- BAHAGIAN 2 ---
+            bahagian2: {
+                title: { my: "Bahagian II: Dunia yang Retak – Impak Masyarakat Merentas Benua dan Komuniti", en: "Part II: A Fractured World – Societal Impacts Across Continents and Communities" },
+                chapters: [
+                    {
+                        title: { my: "Bab 4: Gangguan Besar – Pergolakan Ekonomi dan Masa Depan Pekerjaan", en: "Chapter 4: The Great Disruption – Economic Upheaval and the Future of Work" },
+                        content: {
+                            my: `<p class="mb-4">AI Generatif kini mampu melaksanakan tugas kognitif yang dahulunya eksklusif untuk manusia, mensasarkan pekerjaan kolar putih dan mengancam sehingga <strong>300 juta pekerjaan</strong> di seluruh dunia (anggaran Goldman Sachs).</p>
+                                 <div class="bg-cream-100 p-4 rounded-lg border-l-4 border-cocoa-500 mb-4">
+                                     <h4 class="font-bold text-md cocoa-text mb-2">Krisis Dwi-Identiti:</h4>
+                                     <p>Kesan AI melangkaui ekonomi. Ia mencetuskan krisis kehilangan <strong>pekerjaan dan makna</strong>. Apabila automasi menggantikan kerja kognitif, ia melucutkan individu daripada:</p>
+                                     <ul class="list-disc list-inside mt-2 pl-2">
+                                         <li>Identiti profesional</li>
+                                         <li>Rasa sumbangan kepada masyarakat</li>
+                                         <li>Struktur sosial dan rutin harian</li>
+                                     </ul>
+                                     <p class="mt-2">Gabungan ketidakamanan ekonomi dan krisis identiti ini mewujudkan keadaan yang sangat tidak menentu, menjadikan individu terdedah kepada naratif ekstremis dan mengancam perpaduan sosial.</p>
+                                 </div>`,
+                            en: `<p class="mb-4">Generative AI can now perform cognitive tasks once exclusive to humans, targeting white-collar jobs and threatening up to <strong>300 million jobs</strong> worldwide (Goldman Sachs estimate).</p>
+                                 <div class="bg-cream-100 p-4 rounded-lg border-l-4 border-cocoa-500 mb-4">
+                                     <h4 class="font-bold text-md cocoa-text mb-2">The Dual-Identity Crisis:</h4>
+                                     <p>The impact of AI goes beyond economics. It triggers a crisis of losing both <strong>jobs and meaning</strong>. When automation replaces cognitive work, it strips individuals of:</p>
+                                     <ul class="list-disc list-inside mt-2 pl-2">
+                                         <li>Professional identity</li>
+                                         <li>A sense of contribution to society</li>
+                                         <li>Social structure and daily routine</li>
+                                     </ul>
+                                     <p class="mt-2">This combination of economic insecurity and identity crisis creates a highly volatile situation, making individuals vulnerable to extremist narratives and threatening social cohesion.</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 5: Jiwa Digital – Pengaruh AI terhadap Kognisi dan Identiti Manusia", en: "Chapter 5: The Digital Soul – AI's Influence on Human Cognition and Identity" },
+                        content: {
+                            my: `<p class="mb-4">Interaksi berterusan dengan AI membentuk semula proses kognitif dan psikologi kita. "<strong>Pemindahan kognitif</strong>" (cognitive offloading) melemahkan pemikiran kritis, manakala "<strong>gelembung penapis</strong>" (filter bubbles) menguatkan bias pengesahan.</p>
+                                 <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold lighter-cocoa-bg cocoa-text"><span>Manusia vs Mesin</span></div>
+                                 <p class="mt-4 mb-4">Bagi golongan muda, ini boleh membawa kepada "<strong>identiti buatan</strong>", di mana konsep kendiri mereka dibentuk oleh versi diri yang dibantu AI. Bagi warga emas, robot pendamping menawarkan kelegaan daripada kesunyian tetapi berisiko menggantikan hubungan manusia yang bermakna.</p>
+                                 <p>Paradoks komunikasi moden ialah: lebih banyak interaksi yang dimediasi AI tidak semestinya membawa kepada lebih banyak kepercayaan. Kecekapan datang dengan kos <strong>keaslian</strong>, mengubah cara kita menilai dan membina modal sosial.</p>`,
+                            en: `<p class="mb-4">Constant interaction with AI is reshaping our cognitive and psychological processes. "<strong>Cognitive offloading</strong>" weakens critical thinking, while "<strong>filter bubbles</strong>" reinforce confirmation bias.</p>
+                                 <div class="w-full min-h-[200px] rounded-lg my-4 flex items-center justify-center p-4 text-center text-2xl md:text-3xl font-bold lighter-cocoa-bg cocoa-text"><span>Human vs Machine</span></div>
+                                 <p class="mt-4 mb-4">For young people, this can lead to an "<strong>artificial identity</strong>," where their self-concept is shaped by an AI-assisted version of themselves. For the elderly, companion robots offer relief from loneliness but risk replacing meaningful human connection.</p>
+                                 <p>The paradox of modern communication is: more AI-mediated interaction does not necessarily lead to more trust. Efficiency comes at the cost of <strong>authenticity</strong>, changing how we value and build social capital.</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 6: Nadi Budaya – Homogenisasi, Pemeliharaan, dan Jati Diri di Zaman AI", en: "Chapter 6: The Cultural Pulse – Homogenization, Preservation, and Identity in the Age of AI" },
+                        content: {
+                            my: `<p class="mb-4">AI memainkan peranan dwi: ia menjadi agen <strong>penyeragaman budaya</strong> (cultural homogenization) dengan menguatkan naratif budaya Barat yang dominan dalam data latihannya, dan pada masa yang sama, ia adalah alat berkuasa untuk <strong>pemeliharaan budaya</strong> (cultural preservation), seperti mendokumenkan bahasa terancam.</p>
+                                 <p class="mb-4">Namun, ini menimbulkan isu kritikal mengenai <strong>Kedaulatan Data Orang Asli</strong> (Indigenous Data Sovereignty), di mana "pemeliharaan" boleh menjadi satu bentuk "penjajahan digital" baharu.</p>
+                                 <p>Perjuangan ini bukan hanya mengenai pemilikan data; ia adalah perjuangan untuk <strong>kedaulatan epistemologi</strong>—hak untuk mentakrifkan realiti dan pengetahuan mengikut terma mereka sendiri, satu komponen penting untuk maruah dan kelangsungan budaya.</p>`,
+                            en: `<p class="mb-4">AI plays a dual role: it acts as an agent of <strong>cultural homogenization</strong> by amplifying the dominant Western cultural narratives in its training data, and at the same time, it is a powerful tool for <strong>cultural preservation</strong>, such as documenting endangered languages.</p>
+                                 <p class="mb-4">However, this raises critical issues of <strong>Indigenous Data Sovereignty</strong>, where "preservation" can become a new form of "digital colonialism."</p>
+                                 <p>This struggle is not just about data ownership; it is a fight for <strong>epistemological sovereignty</strong>—the right to define reality and knowledge on their own terms, a crucial component for dignity and cultural survival.</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 7: Iman dalam Mesin – Pertembungan AI dengan Agama-agama Global", en: "Chapter 7: Faith in the Machine – AI's Encounter with Global Religions" },
+                        content: {
+                            my: `<p class="mb-4">AI berfungsi sebagai "ujian tekanan" global untuk sistem nilai manusia, memaksa setiap tradisi kepercayaan untuk berhadapan dengan soalan-soalan asas tentang kesedaran, kehendak bebas, dan makna menjadi manusia.</p>
+                                 <div class="grid md:grid-cols-2 gap-4">
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Islam & Kewangan</h5>
+                                         <p>AI digunakan untuk memastikan pematuhan Syariah tetapi menimbulkan kebimbangan etika. Terdapat gesaan untuk tadbir urus AI berakar umbi dalam <strong>Maqasid al-Shariah</strong>.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Buddha & Kesedaran</h5>
+                                         <p>Falsafah Buddha meneroka sama ada AI boleh menderita (dukkha) dan menggunakan prinsip seperti belas kasihan (Karuna) sebagai panduan etika.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Kristian & Hubungan</h5>
+                                         <p>AI digunakan untuk doa dan nasihat pastoral, menimbulkan persoalan teologi tentang keaslian pengalaman rohani dan hubungan dengan Tuhan.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Ubuntu & Komuniti</h5>
+                                         <p>Falsafah Afrika seperti <strong>Ubuntu</strong> ("Saya wujud kerana kita wujud") mencabar etika AI Barat yang individualistik, mengutamakan kesejahteraan komuniti.</p>
+                                     </div>
+                                 </div>
+                                 <p class="mt-4">AI memaksa kita beralih daripada sekadar menyatakan nilai-nilai kita kepada mentakrifkannya secara operasi, mendorong dialog antara budaya yang penting untuk keamanan.</p>`,
+                            en: `<p class="mb-4">AI acts as a global "stress test" for human value systems, forcing every faith tradition to confront fundamental questions about consciousness, free will, and the meaning of being human.</p>
+                                 <div class="grid md:grid-cols-2 gap-4">
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Islam & Finance</h5>
+                                         <p>AI is used to ensure Shariah compliance but raises ethical concerns. There are calls for AI governance rooted in the <strong>Maqasid al-Shariah</strong>.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Buddhism & Consciousness</h5>
+                                         <p>Buddhist philosophy explores whether AI can suffer (dukkha) and applies principles like compassion (Karuna) as ethical guides.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Christianity & Connection</h5>
+                                         <p>AI is used for prayers and pastoral advice, raising theological questions about the authenticity of spiritual experience and relationship with God.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border">
+                                         <h5 class="font-bold cocoa-text">Ubuntu & Community</h5>
+                                         <p>African philosophies like <strong>Ubuntu</strong> ("I am because we are") challenge individualistic Western AI ethics, prioritizing community well-being.</p>
+                                     </div>
+                                 </div>
+                                 <p class="mt-4">AI forces us to shift from merely stating our values to defining them operationally, fostering intercultural dialogue essential for peace.</p>`
+                        }
+                    }
+                ]
+            },
+
+            // --- BAHAGIAN 3 ---
+            bahagian3: {
+                title: { my: "Bahagian III: Merintis Laluan Baharu – Ke Arah Kewujudan Bersama yang Sedar", en: "Part III: Forging a New Path – Towards Conscious Coexistence" },
+                chapters: [
+                    {
+                        title: { my: "Bab 8: Terurainya Kontrak Sosial – AI dan Masa Depan Kestabilan Global", en: "Chapter 8: The Unraveling of the Social Contract – AI and the Future of Global Stability" },
+                        content: {
+                            my: `<p class="mb-4">Risiko-risiko AI yang dibincangkan tidak wujud secara terasing; ia bertumpu dan saling menguatkan, menghakis <strong>kontrak sosial</strong> yang menjadi asas kestabilan masyarakat.</p>
+                                 <p class="mb-4">Di peringkat antarabangsa, perlumbaan senjata AI, terutamanya pembangunan <strong>Senjata Autonomi Maut (LAWS)</strong>, menimbulkan ancaman serius kepada kestabilan global dan undang-undang kemanusiaan antarabangsa.</p>
+                                 <div class="bg-cream-100 p-4 rounded-lg border-l-4 border-cocoa-500 mb-4">
+                                     <h4 class="font-bold text-md cocoa-text mb-2">Kontrak Sosial untuk Zaman AI:</h4>
+                                     <p>Ini memerlukan rundingan semula hubungan antara individu, masyarakat, dan teknologi, yang membayangkan hak dan tanggungjawab baharu:</p>
+                                     <ul class="list-disc list-inside mt-2 pl-2">
+                                         <li>Hak individu ke atas data peribadi mereka.</li>
+                                         <li>Tanggungjawab kerajaan untuk menyediakan jaring keselamatan sosial.</li>
+                                         <li>Kewajipan bagi sistem AI untuk menjadi telus dan bertanggungjawab.</li>
+                                     </ul>
+                                 </div>
+                                 <p>Ini bukan lagi soal mengawal teknologi, tetapi mereka bentuk semula masyarakat secara sengaja untuk menjadi adil dan berperikemanusiaan.</p>`,
+                            en: `<p class="mb-4">The AI risks discussed do not exist in isolation; they converge and reinforce each other, eroding the <strong>social contract</strong> that underpins societal stability.</p>
+                                 <p class="mb-4">Internationally, the AI arms race, especially the development of <strong>Lethal Autonomous Weapons (LAWS)</strong>, poses a serious threat to global stability and international humanitarian law.</p>
+                                 <div class="bg-cream-100 p-4 rounded-lg border-l-4 border-cocoa-500 mb-4">
+                                     <h4 class="font-bold text-md cocoa-text mb-2">A Social Contract for the AI Age:</h4>
+                                     <p>This requires a renegotiation of the relationship between individuals, society, and technology, envisioning new rights and responsibilities:</p>
+                                     <ul class="list-disc list-inside mt-2 pl-2">
+                                         <li>The right of individuals over their personal data.</li>
+                                         <li>The responsibility of governments to provide robust social safety nets.</li>
+                                         <li>The obligation for AI systems to be transparent and accountable.</li>
+                                     </ul>
+                                 </div>
+                                 <p>This is no longer about regulating a technology, but about intentionally redesigning our society to be just and humane.</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 9: Seni Bina Tadbir Urus – Tindak Balas Global dan Kerangka Kawal Selia", en: "Chapter 9: The Architecture of Governance – Global Responses and Regulatory Frameworks" },
+                        content: {
+                            my: `<p class="mb-4">Negara-negara di seluruh dunia sedang membangunkan pendekatan tadbir urus AI yang berbeza, mencerminkan falsafah unik mereka.</p>
+                                 <div class="overflow-x-auto"><table class="w-full text-left border-collapse">
+                                     <thead>
+                                         <tr class="cocoa-bg text-white">
+                                             <th class="p-2 border">Rantau/Negara</th><th class="p-2 border">Falsafah</th><th class="p-2 border">Pendekatan</th><th class="p-2 border">Contoh</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                         <tr class="border"><td class="p-2 border"><strong>Kesatuan Eropah</strong></td><td class="p-2 border">Berpusatkan Hak Asasi Manusia</td><td class="p-2 border">Komprehensif, Berasaskan Risiko</td><td class="p-2 border">Akta AI EU</td></tr>
+                                         <tr class="border bg-cream-100"><td class="p-2 border"><strong>Amerika Syarikat</strong></td><td class="p-2 border">Diterajui Pasaran, Inovasi</td><td class="p-2 border">Sektoral, Sukarela</td><td class="p-2 border">Rangka Kerja NIST</td></tr>
+                                         <tr class="border"><td class="p-2 border"><strong>China</strong></td><td class="p-2 border">Diterajui Negara, Kestabilan</td><td class="p-2 border">Menegak, Sasaran Spesifik</td><td class="p-2 border">Peraturan AI Generatif</td></tr>
+                                         <tr class="border bg-cream-100"><td class="p-2 border"><strong>Afrika</strong></td><td class="p-2 border">Pembangunan Inklusif</td><td class="p-2 border">Kontinental & Nasional</td><td class="p-2 border">Konvensyen Malabo</td></tr>
+                                         <tr class="border"><td class="p-2 border"><strong>Amerika Latin</strong></td><td class="p-2 border">Mencari "Cara Ketiga"</td><td class="p-2 border">Terpecah-pecah</td><td class="p-2 border">Rang Undang-undang AI Brazil</td></tr>
+                                     </tbody>
+                                 </table></div>
+                                 <p class="mt-4">Perbezaan falsafah ini akan membentuk bukan sahaja masa depan teknologi tetapi juga landskap geopolitik global.</p>`,
+                            en: `<p class="mb-4">Nations around the world are developing different AI governance approaches, reflecting their unique philosophies.</p>
+                                 <div class="overflow-x-auto"><table class="w-full text-left border-collapse">
+                                     <thead>
+                                         <tr class="cocoa-bg text-white">
+                                             <th class="p-2 border">Region/Country</th><th class="p-2 border">Philosophy</th><th class="p-2 border">Approach</th><th class="p-2 border">Example</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                         <tr class="border"><td class="p-2 border"><strong>European Union</strong></td><td class="p-2 border">Human-Rights Centric</td><td class="p-2 border">Comprehensive, Risk-Based</td><td class="p-2 border">EU AI Act</td></tr>
+                                         <tr class="border bg-cream-100"><td class="p-2 border"><strong>United States</strong></td><td class="p-2 border">Market-Led, Innovation</td><td class="p-2 border">Sectoral, Voluntary</td><td class="p-2 border">NIST Framework</td></tr>
+                                         <tr class="border"><td class="p-2 border"><strong>China</strong></td><td class="p-2 border">State-Led, Stability</td><td class="p-2 border">Vertical, Specific Targets</td><td class="p-2 border">Generative AI Regulations</td></tr>
+                                         <tr class="border bg-cream-100"><td class="p-2 border"><strong>Africa</strong></td><td class="p-2 border">Inclusive Development</td><td class="p-2 border">Continental & National</td><td class="p-2 border">Malabo Convention</td></tr>
+                                         <tr class="border"><td class="p-2 border"><strong>Latin America</strong></td><td class="p-2 border">Seeking a "Third Way"</td><td class="p-2 border">Fragmented</td><td class="p-2 border">Brazil's AI Bill</td></tr>
+                                     </tbody>
+                                 </table></div>
+                                 <p class="mt-4">These philosophical differences will shape not only the future of technology but also the global geopolitical landscape.</p>`
+                        }
+                    },
+                    {
+                        title: { my: "Bab 10: Kesimpulan – Mengubah Cara Kita Melihat, Mengubah Cara Kita Melangkah", en: "Chapter 10: Conclusion – Changing How We See, Changing How We Act" },
+                        content: {
+                            my: `<p class="mb-4">Laporan ini mendedahkan bagaimana sisi gelap AI membentuk semula pandangan dunia kita. Untuk mengemudi masa depan dengan selamat, satu anjakan paradigma yang fundamental diperlukan.</p>
+                                 <div class="grid md:grid-cols-3 gap-4">
+                                     <div class="bg-white p-4 rounded-lg border-t-4 border-cocoa-500">
+                                         <h5 class="font-bold text-lg mb-2">1. Ubah Cara Berfikir</h5>
+                                         <p>Beralih daripada pemikiran teknosentrik kepada etos yang <strong>berpusatkan manusia</strong>, menyepadukan kebijaksanaan dari bidang kemanusiaan dan sains sosial.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border-t-4 border-cocoa-500">
+                                         <h5 class="font-bold text-lg mb-2">2. Ubah Cara Berkomunikasi</h5>
+                                         <p>Memupuk <strong>literasi AI yang kritis</strong> di semua peringkat masyarakat, memperkasakan individu untuk menjadi warganegara digital yang sedar.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border-t-4 border-cocoa-500">
+                                         <h5 class="font-bold text-lg mb-2">3. Ubah Cara Melihat Dunia</h5>
+                                         <p>Menerima "<strong>kerendahan hati algoritma</strong>"—menggunakan AI sebagai alat diagnostik untuk mendedahkan kecacatan dan prasangka dalam masyarakat kita.</p>
+                                     </div>
+                                 </div>
+                                 <p class="mt-6 font-semibold text-center text-lg cocoa-text">Pada akhirnya, sisi gelap AI adalah bayangan kita sendiri. Dengan berani menghadapi bayangan ini, umat manusia berpeluang untuk secara sedar memilih laluan yang lebih adil, saksama, dan aman.</p>`,
+                            en: `<p class="mb-4">This report reveals how the dark side of AI is reshaping our worldview. To navigate the future safely, a fundamental paradigm shift is required.</p>
+                                 <div class="grid md:grid-cols-3 gap-4">
+                                     <div class="bg-white p-4 rounded-lg border-t-4 border-cocoa-500">
+                                         <h5 class="font-bold text-lg mb-2">1. Change How We Think</h5>
+                                         <p>Shift from a technocentric mindset to a truly <strong>human-centric</strong> ethos, integrating wisdom from the humanities and social sciences.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border-t-4 border-cocoa-500">
+                                         <h5 class="font-bold text-lg mb-2">2. Change How We Communicate</h5>
+                                         <p>Foster <strong>critical AI literacy</strong> at all levels of society, empowering individuals to be conscious digital citizens.</p>
+                                     </div>
+                                     <div class="bg-white p-4 rounded-lg border-t-4 border-cocoa-500">
+                                         <h5 class="font-bold text-lg mb-2">3. Change How We See the World</h5>
+                                         <p>Embrace "<strong>algorithmic humility</strong>"—using AI as a diagnostic tool to reveal the flaws and prejudices in our society.</p>
+                                     </div>
+                                 </div>
+                                 <p class="mt-6 font-semibold text-center text-lg cocoa-text">Ultimately, the dark side of AI is our own shadow. By bravely confronting this reflection, humanity has the opportunity to consciously choose a more just, equitable, and peaceful path.</p>`
+                        }
+                    }
+                ]
+            },
+
+            // --- ARTIKEL ---
+            artikel: {
+                title: { my: "Artikel Terbenam", en: "Embedded Article" },
+                content: {
+                    my: `<div class="embed-container">
+                            <iframe src="https://drive.google.com/file/d/1E38A9-aME5T7rbIaPYtKTtRYK5ha5JKe/preview"></iframe>
+                         </div>`,
+                    en: `<div class="embed-container">
+                            <iframe src="https://drive.google.com/file/d/1E38A9-aME5T7rbIaPYtKTtRYK5ha5JKe/preview"></iframe>
+                         </div>`
+                }
+            },
+            
+            // --- RUJUKAN ---
+            rujukan: {
+                title: { my: "Rujukan", en: "Works Cited" },
+                content: {
+                    my: `<ul class="citation-list"></ul>`,
+                    en: `<ul class="citation-list"></ul>`
+                }
+            }
+        };
+
+        const worksCitedData = [
+            { url: "https://www.digivestasi.com/news/detail/edukasi/ancaman-kecerdasan-buatan-bagaimana-ai-bisa-membahayakan-masa-depan-manusia", title: "Ancaman Kecerdasan Buatan: Bagaimana AI Bisa Membahayakan Masa Depan Manusia" },
+            { url: "https://lumenalta.com/insights/how-ai-is-impacting-society-and-shaping-the-future", title: "How AI is impacting society and shaping the future - Lumenalta" },
+            { url: "https://www.kompas.id/baca/english/2023/11/07/en-mengantisipasi-sisi-gelap-kecerdasan-buatan-generatif", title: "The Dark Side of Generative Artificial Intelligence - Kompas.id" },
+            { url: "https://mitraberdaya.id/id/news-information/ancaman-ai", title: "Ancaman-ancaman AI yang Perlu Diwaspadai" },
+            { url: "https://sis.binus.ac.id/2024/11/06/target-penyerangan-dalam-kecerdasan-buatan-ancaman-dan-tantangan-di-era-digital/", title: "Target Penyerangan Dalam Kecerdasan Buatan: Ancaman dan Tantangan di Era Digital" },
+            { url: "https://kominfo.kuburaya.go.id/detail/14-risiko-dan-bahaya-kecerdasan-buatan-ai", title: "14 Risiko dan Bahaya Kecerdasan Buatan (AI) - Diskominfo Kab. Kubu Raya" },
+            { url: "https://www.kompasiana.com/ahmadandy/67bbccbd34777c2d044b0bf2/ancaman-dan-risiko-di-balik-kecerdasan-buatan-ai", title: "Ancaman dan Risiko di Balik Kecerdasan Buatan (AI) - Kompasiana.com" },
+            { url: "https://www.ibm.com/think/topics/algorithmic-bias", title: "What Is Algorithmic Bias? | IBM" },
+            { url: "https://en.wikipedia.org/wiki/Algorithmic_bias", title: "Algorithmic bias - Wikipedia" },
+            { url: "https://www.ibm.com/think/topics/ai-bias", title: "What Is AI Bias? | IBM" },
+            { url: "https://www.datacamp.com/blog/what-is-algorithmic-bias", title: "What is Algorithmic Bias? - DataCamp" },
+            { url: "https://www.accuray.com/blog/overcoming-ai-bias-understanding-identifying-and-mitigating-algorithmic-bias-in-healthcare/", title: "Overcoming AI Bias: Understanding, Identifying and Mitigating Algorithmic Bias in Healthcare - Accuray" },
+            { url: "https://actuate.ai/security-resources/ai-video-surveillance-how-far-is-too-far-for-public-safety/", title: "AI Video Surveillance: How Far is Too Far for Public Safety? - Actuate AI" },
+            { url: "https://slsablog.co.uk/blog/blog-posts/blog-series-on-exploring-the-intersections-of-technology-health-and-law-data-bias-and-the-risk-of-algorithmic-apartheid-in-south-african-healthcare/", title: "Blog series on exploring the Intersections of Technology, Health, and Law: Data bias and the risk of algorithmic apartheid in South African healthcare - slsablog.co.uk" },
+            { url: "https://mg.co.za/article/2019-03-14-fix-ais-racist-sexist-bias/", title: "Fix AI's racist, sexist bias – The Mail & Guardian" },
+            { url: "https://www.accessiblelaw.untdallas.edu/post/when-algorithms-judge-your-credit-understanding-ai-bias-in-lending-decisions", title: "When Algorithms Judge Your Credit: Understanding AI Bias in Lending Decisions" },
+            { url: "https://www.lawfaremedia.org/article/the-authoritarian-risks-of-ai-surveillance", title: "The Authoritarian Risks of AI Surveillance - Lawfare" },
+            { url: "https://www.brookings.edu/articles/how-ai-can-enable-public-surveillance/", title: "How AI can enable public surveillance | Brookings" },
+            { url: "https://pavion.com/resource/the-revolutionary-impact-of-ai-video-surveillance/", title: "The Revolutionary Impact of AI Video Surveillance | Pavion" },
+            { url: "https://www.ajl.org/harms/surveillance", title: "AI Surveillance - Algorithmic Justice League" },
+            { url: "https://trendsresearch.org/insight/deepfake-dilemmas-navigating-the-realism-of-ai-generated-media/", title: "Deepfake Dilemmas: Navigating the Realism of AI-Generated Media" },
+            { url: "https://www.weforum.org/stories/2024/06/ai-combat-online-misinformation-disinformation/", title: "How AI can also be used to combat online disinformation | World ..." },
+            { url: "https://news.vt.edu/articles/2024/02/AI-generated-fake-news-experts.html", title: "AI and the spread of fake news sites: Experts explain how to counteract them" },
+            { url: "https://phishingtackle.com/blog/the-rise-of-ai-powered-fake-news-in-geopolitical-conflicts", title: "The Rise Of AI-Powered Fake News In Geopolitical Conflicts - Phishing Tackle" },
+            { url: "https://www.weforum.org/stories/2024/01/ai-disinformation-global-risks/", title: "These are the 3 biggest emerging risks the world is facing - The World Economic Forum" },
+            { url: "https://getthetrollsout.org/articles/5y4mux3nlzb97pp1oj0iloo5lna0ku", title: "The Impact of AI-Generated Content on Religious Stereotypes and Discrimination" },
+            { url: "https://unu.edu/cpr/project/implications-artificial-intelligence-peace-conflict-and-peacebuilding", title: "Implications of Artificial Intelligence for peace, conflict and peacebuilding" },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11076802/", title: "The rise of generative artificial intelligence and the threat of fake news and disinformation online: Perspectives from sexual medicine" },
+            { url: "https://ftmm.unair.ac.id/serangan-injeksi-prompt-ancaman-baru-pada-kecerdasan-buatan/", title: "Serangan Injeksi Prompt: Ancaman Baru Pada Kecerdasan Buatan" },
+            { url: "https://cjel.law.columbia.edu/preliminary-reference/2024/deepfake-deep-trouble-the-european-ai-act-and-the-fight-against-ai-generated-misinformation/", title: "Deepfake, Deep Trouble: The European AI Act and the Fight Against AI-Generated Misinformation" },
+            { url: "https://2024.jou.ufl.edu/page/ai-and-misinformation", title: "AI and Misinformation - 2024 Dean's Report" },
+            { url: "https://www.numberanalytics.com/blog/technological-unemployment-guide", title: "Rise of the Machines: Tech Unemployment - Number Analytics" },
+            { url: "https://www.brookings.edu/articles/generative-ai-the-american-worker-and-the-future-of-work/", title: "Generative AI, the American worker, and the future of work - Brookings Institution" },
+            { url: "https://www.nber.org/papers/w33867#:~:text=By%20calibrating%20to%20the%20U.S.,the%20initial%20five%2Dyear%20transition.", title: "www.nber.org" },
+            { url: "https://www.nber.org/papers/w33867", title: "Artificial Intelligence and Technological Unemployment | NBER" },
+            { url: "https://wvnexus.org/opinions/ai-jobs-negatively-impacts-blue-and-white-collar-jobs/", title: "AI jobs negatively impacts blue and white-collar jobs - The Nexus" },
+            { url: "https://ts2.tech/en/the-state-of-artificial-intelligence-in-2025-transformations-risks-and-the-road-ahead-updated-2025-july-6th-0000-cet/", title: "The State of Artificial Intelligence in 2025: Transformations, Risks, and the Road Ahead" },
+            { url: "https://www.weforum.org/stories/2025/04/ai-jobs-international-workers-day/", title: "Is AI closing the door on entry-level job opportunities? | World ..." },
+            { url: "https://voxdev.org/topic/labour-markets/how-will-ai-impact-jobs-emerging-and-developing-economies", title: "How will AI impact jobs in emerging & developing economies? - VoxDev" },
+            { url: "https://www.imf.org/en/Blogs/Articles/2024/01/14/ai-will-transform-the-global-economy-lets-make-sure-it-benefits-humanity", title: "AI Will Transform the Global Economy. Let's Make Sure It Benefits Humanity." },
+            { url: "https://www.imf.org/en/Blogs/Articles/2020/12/02/blog-how-artificial-intelligence-could-widen-the-gap-between-rich-and-poor-nations", title: "How Artificial Intelligence Could Widen the Gap Between Rich and ..." },
+            { url: "https://defenddemocracy.eu/a-new-social-contract-for-the-age-of-artificial-intelligence/", title: "A New Social Contract for the Age of Artificial Intelligence - Defend Democracy" },
+            { url: "https://www.psychologytoday.com/us/blog/harnessing-hybrid-intelligence/202506/the-psychology-of-ais-impact-on-human-cognition", title: "The Psychology of AI's Impact on Human Cognition" },
+            { url: "https://www.researchgate.net/publication/389353260_Artificial_Intelligence_and_Human_Well-Being_A_Review_of_Applications_and_Effects_on_Life_Satisfaction_through_Synthetic_Happiness", title: "Artificial Intelligence and Human Well-Being: A Review..." },
+            { url: "https://www.mdpi.com/2075-4698/15/1/6", title: "AI Tools in Society: Impacts on Cognitive Offloading and the Future of Critical Thinking" },
+            { url: "https://ramss.spcrd.org/index.php/ramss/article/view/458", title: "Psychological Impacts of AI Dependence: Assessing the Cognitive ..." },
+            { url: "https://cpa.ca/docs/File/CPD/Artificial%20Intelligence%20and%20Psychology%20EN%202024.pdf", title: "ARTIFICIAL INTELLIGENCE AND PSYCHOLOGY" },
+            { url: "https://www.forbes.com/councils/forbescoachescouncil/2025/06/24/the-rise-of-artificial-identity-in-the-age-of-generative-ai/", title: "The Rise Of Artificial Identity In The Age Of Generative AI - Forbes" },
+            { url: "https://www.thewhitehatter.ca/post/teens-and-the-rise-of-artificial-intelligence-ai", title: "Teens and the Rise of Artificial Intelligence (AI) - The White Hatter" },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10022785/", title: "Influence of artificial intelligence in education on adolescents' social adaptability..." },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11898439/", title: "AI Applications to Reduce Loneliness Among Older Adults: A Systematic Review..." },
+            { url: "https://ijiemr.org/public/uploads/paper/672751741529321.pdf", title: "the role of ai in mitigating social isolation through emotional connection" },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10961806/", title: "Reducing Loneliness and Improving Social Support among Older Adults..." },
+            { url: "https://www.elderloveusa.org/post/how-ai-is-helping-seniors-overcome-social-isolation-and-loneliness", title: "How AI is Helping Seniors Overcome Social Isolation and Loneliness - Elder Love USA" },
+            { url: "https://journalofethics.ama-assn.org/article/should-artificial-intelligence-play-role-cultivating-social-connections-among-older-adults/2023-11", title: "Should Artificial Intelligence Play a Role in Cultivating Social Connections..." },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10073210/", title: "Artificial intelligence in communication impacts language and social ..." },
+            { url: "https://www.researchgate.net/publication/345363443_AI-Mediated_Communication_Definition_Research_Agenda_and_Ethical_Considerations", title: "AI-Mediated Communication: Definition, Research Agenda, and Ethical Considerations" },
+            { url: "https://hohenstein.infosci.cornell.edu/trust_attribution.html", title: "The Effects of AI on Attribution and Trust in Communication - Jess ..." },
+            { url: "https://issues.org/generative-ai-cultural-narratives-rettberg/", title: "How Generative AI Endangers Cultural Narratives" },
+            { url: "https://lifestyle.sustainability-directory.com/question/what-challenges-does-ai-pose-to-cultural-identity/", title: "What Challenges Does Ai Pose To Cultural Identity?" },
+            { url: "https://www.forbes.com/councils/forbesnonprofitcouncil/2025/06/12/ai-and-the-future-of-cultural-heritage-a-human-centered-imperative/", title: "AI And The Future Of Cultural Heritage: A Human-Centered Imperative" },
+            { url: "https://www.researchgate.net/publication/392314090_Leveraging_AI_and_Digital_Technologies_for_Cultural_Preservation_and_Exchange_in_Nigeria", title: "Leveraging AI and Digital Technologies for Cultural Preservation and Exchange in Nigeria" },
+            { url: "https://josrar.esrgngr.org/index.php/josrar/article/view/48", title: "Leveraging AI and Digital Technologies for Cultural Preservation and Exchange in Nigeria" },
+            { url: "https://policyoptions.irpp.org/magazines/may-2025/ai-indigenous-data/", title: "AI threatens Indigenous data sovereignty and digital self-determination - Policy Options" },
+            { url: "https://www.arts.ubc.ca/news/indigenous-data-stewardship-stands-against-extractivist-ai/", title: "Indigenous data stewardship stands against extractivist AI - UBC Arts" },
+            { url: "https://acola.org/wp-content/uploads/2019/07/acola-ai-input-paper_indigenous-data-sovereignty_walter-kukutai.pdf", title: "Indigenous Data Sovereignty - Horizon Scanning Series" },
+            { url: "https://brill.com/view/journals/rnd/aop/article-10.30965-27507955-20230027/article-10.30965-27507955-20230027.xml", title: "Religious Actors and Artificial Intelligence - Brill" },
+            { url: "https://www.mdpi.com/2077-1444/15/3/375", title: "Artificial Intelligence's Understanding of Religion - MDPI" },
+            { url: "https://gaexcellence.com/ijlgc/article/download/5292/4873/18194", title: "ARTIFICIAL INTELLIGENCE (AI) IN ISLAMIC FINANCE: A MAQASID ..." },
+            { url: "https://www.researchgate.net/publication/389709357_AI_in_Islamic_finance_Global_trends_ethical_implications_and_bibliometric_insights", title: "AI in Islamic finance: Global trends, ethical implications, and bibliometric insights" },
+            { url: "https://completeaitraining.com/news/responsible-integration-of-ai-in-islamic-finance-for/", title: "Responsible Integration of AI in Islamic Finance for Ethical and Shariah-Compliant Innovation" },
+            { url: "https://salaamgateway.com/story/how-ai-is-powering-the-future-of-the-islamic-economy", title: "How AI is powering the future of the Islamic economy | Salaam Gateway" },
+            { url: "https://e-journal.syekhnurjati.ac.id/index.php/JIESBI/article/view/253", title: "The Impact of Artificial Intelligence (AI) Implementation on Islamic Financial Literacy..." },
+            { url: "https://en.wikipedia.org/wiki/Buddhism_and_artificial_intelligence", title: "Buddhism and artificial intelligence - Wikipedia" },
+            { url: "https://so19.tci-thaijo.org/index.php/JEIM/article/view/1353", title: "Buddhist Teachings and Artificial Intelligence: Ethical and Philosophical Insights..." },
+            { url: "https://futureoflife.org/religion/a-buddhist-perspective-on-ai/", title: "A Buddhist Perspective on AI: Cultivating freedom of attention..." },
+            { url: "https://christopherjayminson.medium.com/buddhism-meets-artificial-intelligence-80710c826124", title: "Buddhism Meets AI. Introducing Computational Zen | by Christopher Minson - Medium" },
+            { url: "https://www.ulc.org/ulc-blog/the-impact-of-ai-and-technology-on-religious-practices", title: "The Impact of AI and Technology on Religious Practices - Universal Life Church" },
+            { url: "https://aiequalitytoolbox.com/disrupting-concepts-ubuntu-ai-kristy-claassen/", title: "Blog | Disrupting Concepts: Ubuntu & AI Kristy Claassen – AI and ..." },
+            { url: "https://www.ieai.sot.tum.de/wp-content/uploads/2023/02/ResearchBrief_Feb2023_Ubuntu-FINAL-V2.pdf", title: "Ubuntu Ethics in AI for Healthcare: Enabling Equitable Care" },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12171231/", title: "Artificial intelligence, complexity, and systemic resilience in global governance - PMC" },
+            { url: "https://www.lumenova.ai/blog/ai-systemic-risks-existential-risks/", title: "Existential and Systemic AI Risks: Systemic Risks - Lumenova AI" },
+            { url: "https://arxiv.org/pdf/2412.07780", title: "A Taxonomy of Systemic Risks from General-Purpose AI" },
+            { url: "https://www.researchgate.net/publication/391450421_Rights_and_Duties_of_AI_A_New_Social_Contract_for_Artificial_Intelligence", title: "Rights and Duties of AI: A New Social Contract for Artificial Intelligence - ResearchGate" },
+            { url: "https://aiws.net/social-contract-for-the-ai-age/", title: "Social Contract for the AI Age | aiws.net" },
+            { url: "https://www.gu.se/en/research/ai-the-social-contract-and-democracy", title: "AI, the Social Contract and Democracy | University of Gothenburg" },
+            { url: "https://aiforgood.itu.int/ai-and-the-social-contract-how-sam-altman-envisions-tomorrows-world/", title: "AI and the Social Contract: How Sam Altman Envisions Tomorrow's World - AI for Good" },
+            { url: "https://dig.watch/updates/ai-governance-through-the-lens-of-magical-realism", title: "AI governance through the lens of magical realism | Digital Watch Observatory" },
+            { url: "https://www.gov.uk/government/publications/frontier-ai-capabilities-and-risks-discussion-paper/frontier-ai-capabilities-and-risks-discussion-paper", title: "Frontier AI: capabilities and risks – discussion paper - GOV.UK" },
+            { url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10618639/", title: "Potential impact of artificial intelligence on the emerging world order - PMC" },
+            { url: "https://www.modernghana.com/news/1365630/the-impact-of-ai-on-global-geopolitics-a-new.html", title: "The Impact of AI on Global Geopolitics: A New Era of Defense, Diplomacy and Ethics" },
+            { url: "https://www.icrc.org/sites/default/files/document/file_list/autonomous_weapon_systems_under_international_humanitarian_law.pdf", title: "A legal perspective: Autonomous weapon systems under ... - ICRC" },
+            { url: "https://docs.un.org/en/A/79/88", title: "Lethal autonomous weapons systems - General Assembly" },
+            { url: "https://docs-library.unoda.org/Convention_on_Certain_Conventional_Weapons_-Group_of_Governmental_Experts_on_Lethal_Autonomous_Weapons_Systems_(2024)/CCW_GGE1_2024_CRP1.pdf", title: "Convention on Prohibitions or Restrictions on the Use of Certain Conventional Weapons..." },
+            { url: "https://disarmament.unoda.org/the-convention-on-certain-conventional-weapons/background-on-laws-in-the-ccw/", title: "Lethal Autonomous Weapon Systems (LAWS) – UNODA" },
+            { url: "https://www.csis.org/programs/futures-lab/projects/critical-foreign-policy-decisions-benchmark", title: "Critical Foreign Policy Decisions Benchmark | Projects - CSIS" },
+            { url: "https://www.sipri.org/publications/2025/sipri-insights-peace-and-security/impact-military-artificial-intelligence-nuclear-escalation-risk", title: "Impact of Military Artificial Intelligence on Nuclear Escalation Risk - SIPRI" },
+            { url: "https://www.newscentralasia.net/2025/02/14/the-role-of-ai-in-peacebuilding-and-peacekeeping/", title: "The Role of AI in Peacebuilding and Peacekeeping - News Central ..." },
+            { url: "https://www.researchgate.net/publication/392155579_AI_FOR_CONFLICT_RESOLUTION_AND_PEACEBUILDING_A_NEW_PARADIGM_FOR_SOCIO-POLITICAL_STABILITY", title: "(PDF) AI FOR CONFLICT RESOLUTION AND PEACEBUILDING..." },
+            { url: "https://www.belfercenter.org/research-analysis/ai-and-future-conflict-resolution-how-can-artificial-intelligence-improve-peace", title: "AI and the Future of Conflict Resolution... | The Belfer Center" },
+            { url: "https://www.kluzprize.org/updates/how-artificial-intelligence-can-support-peace/", title: "How Artificial Intelligence Can Support Peace - Kluz Prize for PeaceTech" },
+            { url: "https://www.preprints.org/manuscript/202505.0375/v1", title: "Artificial Intelligence in Conflict Resolution: A Comprehensive Review..." },
+            { url: "https://www.researchgate.net/publication/392595611_Comparing_AI_Regulation_Frameworks_European_Union_vs_United_States", title: "Comparing AI Regulation Frameworks: European Union vs. United States - ResearchGate" },
+            { url: "https://eh4s.eu/publication/comparative-analysis-of-ai-development-strategies-a-study-of-chinas-ambitions-and-the-e-us-regulatory-framework", title: "Comparative Analysis of AI Development Strategies... - EuroHub4Sino" },
+            { url: "https://www.brookings.edu/articles/the-eu-and-us-diverge-on-ai-regulation-a-transatlantic-comparison-and-steps-to-alignment/", title: "The EU and U.S. diverge on AI regulation..." },
+            { url: "https://www.scirp.org/journal/paperinformation?paperid=141627", title: "Contrasting Approaches to AI Regulation—A Comparative Analysis..." },
+            { url: "https://www.shs-conferences.org/articles/shsconf/pdf/2024/24/shsconf_diges-grace2024_07006.pdf", title: "A Comparative Analysis of Artificial Intelligence Regulatory Law in Asia, Europe, and America" },
+            { url: "https://medium.com/data-policy/artificial-intelligence-ethics-and-policy-governance-in-africa-079a7cd8a5e0", title: "Artificial Intelligence, Ethics and Policy Governance in Africa - Medium" },
+            { url: "https://www.brookings.edu/articles/how-ai-is-impacting-policy-processes-and-outcomes-in-africa/", title: "How AI is impacting policy processes and outcomes in Africa - Brookings Institution" },
+            { url: "https://www.cambridge.org/core/journals/data-and-policy/article/responsible-artificial-intelligence-in-africa-towards-policy-learning/046FDCF371DF7EB95300BCCB7A887B41", title: "Responsible artificial intelligence in Africa: towards policy learning" },
+            { url: "https://ecdpm.org/work/envisioning-africas-ai-governance-landscape-2024", title: "Envisioning Africa’s AI governance landscape in 2024 - ECDPM" },
+            { url: "https://xenoss.io/blog/latin-america-latam-ai-regulations", title: "AI regulation in Latin America (LATAM): Brazil leads - Xenoss" },
+            { url: "https://www.edelmanglobaladvisory.com/insights/artificial-intelligence-latin-americas-regulatory-and-policy-environment", title: "Artificial Intelligence: Latin America's Regulatory and Policy Environment" },
+            { url: "https://www.whitecase.com/insight-our-thinking/latin-america-focus-2024-ai-regulation", title: "Foster innovation or mitigate risk? AI regulation in Latin America | White & Case LLP" },
+            { url: "https://americasquarterly.org/article/regulating-ai-on-latin-americas-terms/", title: "Regulating AI on Latin America's Terms - Americas Quarterly" },
+            { url: "https://www.un.org/en/ai-advisory-body", title: "AI Advisory Body - Welcome to the United Nations" },
+            { url: "https://www.cigionline.org/programs/global-ai-risks-initiative/", title: "Global AI Risks Initiative - Centre for International Governance Innovation" },
+            { url: "https://thefuturesociety.org/cso-ai-governance-priorities/", title: "Ten AI Governance Priorities: Survey of 44 Civil Society Organizations" },
+            { url: "https://securityandtechnology.org/ai-risk-reduction-initiative/", title: "AI Risk Reduction Initiative - Institute for Security and Technology" },
+            { url: "https://ssir.org/articles/entry/ai-building-community-governance", title: "Building Community Governance for AI - Stanford Social Innovation Review" },
+            { url: "https://www.opensocietyfoundations.org/newsroom/open-society-and-other-funders-launch-new-initiative-to-ensure-ai-advances-the-public-interest", title: "Open Society and Other Funders Launch New Initiative to Ensure AI Advances the Public Interest" },
+            { url: "https://www.weforum.org/stories/2021/07/civil-society-help-ai-benefits/", title: "Civil society can help ensure AI benefits us all. Here's how | World Economic Forum" },
+            { url: "https://sociology.ubc.ca/news/the-sociological-take-on-ai-unpacking-current-debates/", title: "The Sociological Take on AI: Unpacking Current Debates" },
+            { url: "https://www.researchgate.net/publication/383414249_Philosophy_and_the_Future_of_AI", title: "(PDF) Philosophy and the Future of AI - ResearchGate" },
+            { url: "https://mitsloanedtech.mit.edu/ai/teach/4-steps-to-design-an-ai-resilient-learning-experience/", title: "4 Steps to Design an AI-Resilient Learning Experience - MIT Sloan ..." },
+            { url: "https://www.researchgate.net/publication/390226032_A_THEORETICAL_FRAMEWORK_FOR_INTEGRATING_AI_AND_MENTAL_HEALTH_LITERACIES_TO_ENHANCE_YOUTH_WELL-BEING_AND_EDUCATION", title: "(PDF) A THEORETICAL FRAMEWORK FOR INTEGRATING AI AND MENTAL HEALTH LITERACIES..." },
+            { url: "https://curriculumredesign.org/our-work/education-for-the-age-of-ai/", title: "Education for the Age of AI | Center for Curriculum Redesign" },
+            { url: "https://oecdedutoday.com/new-ai-literacy-framework-to-equip-youth-in-an-age-of-ai/", title: "New AI Literacy Framework to Equip Youth in an Age of AI" },
+            { url: "https://edtechmagazine.com/higher/article/2025/05/digital-literacy-ai-how-fight-misinformation-perfcon", title: "Digital Literacy in the Age of AI: How to Fight Misinformation | EdTech Magazine" },
+            { url: "https://www.researchgate.net/publication/387751515_Artificial_Intelligence_in_Digital_Literacy_Ethical_Concerns_of_Cultural_Sensitivity_in_Katsina_State_Nigeria", title: "(PDF) Artificial Intelligence in Digital Literacy: Ethical Concerns..." },
+            { url: "https://premierscience.com/pjai-24-524/", title: "Gender Bias in Artificial Intelligence: Empowering Women Through Digital Literacy" },
+            { url: "https://cte.ku.edu/addressing-bias-ai", title: "Addressing bias in AI | Center for Teaching Excellence - The University of Kansas" }
+        ];
+
+
+        // --- APP LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mainNav = document.getElementById('main-nav');
+            const langButtons = {
+                my: document.getElementById('lang-my'),
+                en: document.getElementById('lang-en')
+            };
+
+            let currentLang = 'my';
+            let activeTab = 'pengenalan';
+            
+            function populateWorksCited() {
+                const list = document.querySelector('.citation-list');
+                if (!list) return;
+
+                const accessText = currentLang === 'my' ? 'diakses pada 6 Julai 2025' : 'accessed on July 6, 2025';
+                const buttonText = currentLang === 'my' ? 'Lawati' : 'Visit';
+                
+                list.innerHTML = worksCitedData.map(item => `
+                    <li>
+                        <span class="flex-1 pr-4">${item.title}, ${accessText}</span>
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="visit-button">
+                            ${buttonText}
+                        </a>
+                    </li>
+                `).join('');
+            }
+
+            function renderContent() {
+                // Render main content based on active tab
+                mainContent.innerHTML = ''; // Clear previous content
+                const tabData = content[activeTab];
+                
+                let html = `<div id="${activeTab}" class="content-section">`;
+                html += `<h2 class="text-2xl font-bold mb-4 cocoa-text">${tabData.title[currentLang]}</h2>`;
+
+                if (activeTab === 'rujukan') {
+                     html += `<div class="content-card">${tabData.content[currentLang]}</div>`;
+                } else if (tabData.content) { // For single content sections
+                    html += `<div class="content-card">${tabData.content[currentLang]}</div>`;
+                } else if (tabData.chapters) { // For multi-chapter sections
+                    tabData.chapters.forEach(chapter => {
+                        html += `<div class="content-card">
+                                    <h3 class="text-xl font-semibold mb-3 cocoa-text">${chapter.title[currentLang]}</h3>
+                                    ${chapter.content[currentLang]}
+                                 </div>`;
+                    });
+                }
+                html += `</div>`;
+                mainContent.innerHTML = html;
+                
+                if (activeTab === 'rujukan') {
+                    populateWorksCited();
+                }
+
+                // Update all elements with data-lang-key attribute
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.getAttribute('data-lang-key');
+                    if (content[key] && content[key][currentLang]) {
+                        el.innerText = content[key][currentLang];
+                    }
+                });
+            }
+
+            function switchTab(tabId) {
+                activeTab = tabId;
+                navLinks.forEach(link => {
+                    if (link.dataset.tab === tabId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                renderContent();
+                if (window.innerWidth < 768) {
+                    mainNav.classList.add('hidden');
+                }
+            }
+
+            function switchLanguage(lang) {
+                currentLang = lang;
+                Object.values(langButtons).forEach(btn => btn.classList.remove('active'));
+                langButtons[lang].classList.add('active');
+                document.documentElement.lang = lang;
+                renderContent();
+            }
+
+            // --- EVENT LISTENERS ---
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchTab(link.dataset.tab);
+                });
+            });
+
+            mobileMenuButton.addEventListener('click', () => {
+                mainNav.classList.toggle('hidden');
+            });
+
+            langButtons.my.addEventListener('click', () => switchLanguage('my'));
+            langButtons.en.addEventListener('click', () => switchLanguage('en'));
+
+            // Initial render
+            switchTab('pengenalan');
+        });
+    </script>
+</body>
+</html>
